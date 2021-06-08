@@ -1,8 +1,7 @@
 import string as st
 import texts as txt
 
-# print(st.punctuation + st.whitespace)
-
+# nastavení vstupních údajů uživatelů
 users = {"bob": "123",
          "ann": "pass123",
          "mike": "password123",
@@ -10,6 +9,7 @@ users = {"bob": "123",
 
 DELIM = 20*"-"
 
+# zeptej se na vstupní údaje
 usr = input("username: ")
 pwd = input("password: ")
 print(DELIM)
@@ -23,23 +23,23 @@ print(f"Welcome to the app, {usr}")
 print(f"We have {len(txt.TEXTS)} texts to be analyzed.")
 print(DELIM)
 
-# zeptej se uživatele který text si vybral
+# zeptej se uživatele, který text si vybral
 selection = input(f"Enter a number btw. 1 and {len(txt.TEXTS)} to select: ")
 print(DELIM)
 
 # zkontroluj správnost vstupu
-# pokud vstup není celé číslo ...
+# pokud vstup není celé číslo skonči
 if not selection.isnumeric():
     exit("Error! Selection must be a (whole) number.")
 
-# jinak převeď vstup na integer
+# ... jinak převeď vstup na integer
 selection = int(selection)
 
-# pokud vstup je menší než jedna nebo větší než délka listu s texty ...
+# pokud vstup je menší než jedna nebo větší než délka listu s texty skonči
 if selection < 1 or selection > len(txt.TEXTS):
     exit(f"Error! Number must be between 1 and {len(txt.TEXTS)}.")
 
-# jinak získej index zvoleného textu
+# ... jinak získej index zvoleného textu
 txt_i = selection - 1
 
 # vytvoř list slov očištěných od interpunkce a bílých znaků rozdělením zvoleného textu podle mezer
@@ -54,19 +54,22 @@ text_stats = {"words": 0,          # počet slov
               "number sum": 0,    # suma čísel
               "word lengths": {}}  # slovník s četnostmi délek slov
 
+# pro každé slovo v listu ...
 for word in word_list:
-    text_stats["words"] += 1
+    text_stats["words"] += 1  # připočti k počtu slov
     if word.istitle():
-        text_stats["titlecase"] += 1
+        text_stats["titlecase"] += 1  # (ne)připočti k počtu slov s prvním velkým
     if word.isupper():
-        text_stats["uppercase"] += 1
+        text_stats["uppercase"] += 1  # (ne)připočti k počtu slov se všemy velkými
     if word.islower():
-        text_stats["lowercase"] += 1
+        text_stats["lowercase"] += 1  # (ne)připočti k počtu slov se všemy malými
     if word.isnumeric():
-        text_stats["numbers"] += 1
-        text_stats["number sum"] += int(word)
+        text_stats["numbers"] += 1  # (ne)připočti k počtu čísel
+        text_stats["number sum"] += int(word)  # (ne)připočti číslo k sumě čísel
+    # k hodnotě slovníku 'word lengths' pro klíč {délka slova} přičti 1
     text_stats["word lengths"][len(word)] = text_stats["word lengths"].get(len(word), 0) + 1
 
+# vypiš statistiky
 if text_stats['words'] == 1:
     print(f"There is {text_stats['words']} word in the selected text.")
 else:
@@ -95,6 +98,8 @@ if text_stats['number sum'] > 0:
     print(f"The sum of all the numbers is {text_stats['number sum']}.")
 print(DELIM)
 
+# ------------------------- Tisk grafu ---------------------------------------
+
 # definuj texty v záhlaví
 heading_labels = 'LEN'
 heading_values = 'OCCURENCES'
@@ -106,15 +111,15 @@ label_col_width = max(max([len(str(key)) for key in text_stats["word lengths"].k
 values_col_width = max(max(text_stats["word lengths"].values()) +
                        len(str(max(text_stats["word lengths"].values()))) + 1, len(heading_values))
 
-# tisk záhlaví
+# tiskni záhlaví
 # (margin_label)POPISEK|(margin_value)HODNOTA
 margin_label = (label_col_width - len(heading_labels)) * " "
 margin_value = ((values_col_width - len(heading_values)) // 2) * " "
 print(margin_label + heading_labels + "|" + margin_value + heading_values)
 
 print("-" * (label_col_width + values_col_width + 2))
-# tisk jednotlivých údajů do grafu
+# tiskni jednotlivé údaje do grafu
 # (margin_label)popisek|****** (číslo)
-for label, value in text_stats["word lengths"].items():
+for label, value in sorted(text_stats["word lengths"].items()):
     margin_label = (label_col_width - len(str(label))) * " "
     print(margin_label + str(label) + "|" + value * "*" + " " + str(value))
