@@ -1,7 +1,7 @@
 import string as st
 
 import texts as txt
-
+from chart import bar_chart
 
 # nastavení vstupních údajů uživatelů
 users = {"bob": "123",
@@ -17,7 +17,7 @@ pwd = input("password: ")
 print(DELIM)
 
 # pokud uživatel zadá špatné jméno, nebo heslo skonči a vypiš chybu
-if usr not in users or users[usr] != pwd:
+if users.get(usr) != pwd:
     exit("Incorrect username or password!")
 
 # pozdrav uživatele a vypiš počet textů k analýze
@@ -98,32 +98,4 @@ print(DELIM)
 
 # ------------------------- Tisk grafu ---------------------------------------
 
-# definuj texty v záhlaví
-heading_labels = 'LEN'
-heading_values = 'OCCURENCES'
-
-# ----- pomocné proměnné pro správné formátování -----
-# šířka sloupce popisků
-# (co je delší: délka nejdelšího popisku, nebo délka textu záhlaví)
-label_col_width = \
-    max(max([len(str(key)) for key in text_stats["word_lengths"].keys()]),
-        len(heading_labels))
-# šířka sloupce hodnot
-# (co je delší: délka sloupce + délka textu popisku + mezera
-# NEBO délka textu záhlaví)
-values_col_width = max(max(text_stats["word_lengths"].values()) +
-                       len(str(max(text_stats["word_lengths"].values()))) + 1,
-                       len(heading_values))
-
-# tiskni záhlaví
-# (margin_label)POPISEK|(margin_value)HODNOTA
-margin_label = (label_col_width - len(heading_labels)) * " "
-margin_value = ((values_col_width - len(heading_values)) // 2) * " "
-print(margin_label + heading_labels + "|" + margin_value + heading_values)
-
-print("-" * (label_col_width + values_col_width + 2))
-# tiskni jednotlivé údaje do grafu
-# (margin_label)popisek|****** (číslo)
-for label, value in sorted(text_stats["word_lengths"].items()):
-    margin_label = (label_col_width - len(str(label))) * " "
-    print(margin_label + str(label) + "|" + value * "*" + " " + str(value))
+bar_chart(text_stats["word_lengths"], labels=['LEN', 'OCCURENCES'])
