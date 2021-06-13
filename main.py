@@ -61,12 +61,13 @@ text_stats = {"words": 0,          # počet slov
 # pro každé slovo v listu ho připočti do statistik pokud splňuje rel. podmínku
 for word in word_list:
     text_stats["words"] += 1
-    if word.isupper():
-        text_stats["uppercase"] += 1
-    elif word.istitle():
-        text_stats["titlecase"] += 1
-    elif word.islower():
-        text_stats["lowercase"] += 1
+    if word.isalpha():
+        if word.isupper():
+            text_stats["uppercase"] += 1
+        elif word.istitle():
+            text_stats["titlecase"] += 1
+        elif word.islower():
+            text_stats["lowercase"] += 1
     elif word.isnumeric():
         text_stats["numbers"] += 1
         text_stats["number_sum"] += int(word)
